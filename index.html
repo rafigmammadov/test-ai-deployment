@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Generative AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #333;
+            margin-top: 30px;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="title">Google Generative AI</h1>
+        <div class="form">
+            <input type="text" id="from" class="input" placeholder="Starting point">
+            <input type="text" id="to" class="input" placeholder="Destination">
+            <input type="text" id="days" class="input" placeholder="Number of days">
+            <button id="generateBtn" class="btn">Generate</button>
+        </div>
+        <h3 class="subtitle">Generated Content</h3>
+        <div id="output" class="output"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "@google/generative-ai": "https://esm.run/@google/generative-ai"
+            }
+        }
+    </script>
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+        const API_KEY = "AIzaSyCmD5uF2BKwYOcRJQzy4Csl-9LTBJXVtoo";
+        const genAI = new GoogleGenerativeAI(API_KEY);
+        async function run() {
+            console.log('Calling');
+            const fromDest = document.getElementById("from").value;
+            const toDest = document.getElementById("to").value;
+            const days = document.getElementById("days").value;
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
+            const prompt = `Create a travel itinerary from ${fromDest} to ${toDest} for ${days} days.`;
+            const result = await model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
+            var converter = new showdown.Converter();
+            document.getElementById("output").innerHTML = converter.makeHtml(text);
+        }
+        document.getElementById("generateBtn").addEventListener("click", run);
+    </script>
+</body>
+
+</html>
